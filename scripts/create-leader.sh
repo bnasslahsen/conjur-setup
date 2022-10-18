@@ -9,6 +9,7 @@ conjurImage=conjur-appliance:12.7.0.1
 conjurService=conjur.service
 masterDNS="conjur.demo.cybr"
 conjurAccount=devsecops
+podmanUser=ec2-user
 
 # Create conjur master
 echo "Creating conjur master"
@@ -17,10 +18,14 @@ set -x
 
 systemctl --user disable $conjurService
 systemctl --user  list-unit-files | grep $conjurService
-
 podman load -i $conjurBinary
-
+podman images
 podman rm --ignore --force $containerName
+
+sudo mkdir -p /opt/cyberark/dap/{config,security,backups,seeds,logs,certs}
+#for podman
+sudo chown $podmanUser:$podmanUser /opt/cyberark/dap/{security,config,backups,seeds,logs}
+
 podman run \
     --name $containerName \
     --detach \
@@ -37,6 +42,8 @@ podman run \
     --volume /opt/cyberark/dap/seeds:/opt/cyberark/dap/seeds:Z \
     --volume /opt/cyberark/dap/logs:/var/log/conjur:Z \
     $conjurImage
+
+podman logs --since=2m $containerName
 
 sleep 10
 
