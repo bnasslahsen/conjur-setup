@@ -4,9 +4,10 @@
 
 # Global Variables
 containerName="12.7"
-conjurBinary="conjur-appliance-Rls-12.7.tar.gz"
+conjurBinary="~/conjur-appliance-Rls-12.7.tar.gz"
 conjurImage=conjur-appliance:12.7.0.1
-masterDNS="conjur-leader.demo.cybr"
+conjurService=conjur.service
+masterDNS="conjur.demo.cybr"
 conjurAccount=devsecops
 
 # Create conjur master
@@ -14,8 +15,8 @@ echo "Creating conjur master"
 echo "------------------------------------"
 set -x
 
-systemctl --user disable conjur
-systemctl --user  list-unit-files | grep conjur
+systemctl --user disable $conjurService
+systemctl --user  list-unit-files | grep $conjurService
 
 podman load -i $conjurBinary
 
@@ -47,3 +48,14 @@ podman exec $containerName evoke configure master \
   --master-altnames $(hostname -s),$(hostname -f) \
   --admin-password="$(cat admin_password)" \
   $conjurAccount
+
+curl -k https://$(hostname -f)/health
+
+# Create Conjur service
+sudo loginctl enable-linger
+mkdir -p ~/.config/systemd/user
+podman generate systemd $containerName --name --container-prefix="" --separator="" > ~/.config/systemd/user/$conjurService
+systemctl --user daemon-reload
+systemctl --user enable $conjurService
+systemctl --user  list-unit-files | grep $conjurService
+systemctl --user status $conjurService
