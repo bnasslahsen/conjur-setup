@@ -3,7 +3,7 @@
 # CREATE:conjur master instance
 
 # Global Variables
-containerName="12.7"
+containerName="conjur-12.7"
 conjurBinary="~/conjur-appliance-Rls-12.7.tar.gz"
 conjurImage=conjur-appliance:12.7.0.1
 conjurService=conjur.service
