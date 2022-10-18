@@ -15,7 +15,8 @@ podmanUser=ec2-user
 echo "Creating conjur master"
 echo "------------------------------------"
 set -x
-
+## Enable IPv4 forwarding
+sudo sysctl -w net.ipv4.ip_forward=1
 systemctl --user disable $conjurService
 systemctl --user  list-unit-files | grep $conjurService
 podman load -i $conjurBinary
