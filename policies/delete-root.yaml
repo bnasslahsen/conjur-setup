@@ -1,0 +1,3 @@
+# conjur policy update -b root -f delete-root.yaml
+- !delete
+  record: !policy root

@@ -1,0 +1,31 @@
+# Secret that will only replicate to 'full' Follower
+- !variable full-only
+
+# Secret we expect only to replicate to Followers in the US region
+- !host us-based-app
+- !variable us-only
+
+- !permit
+  resource: !variable us-only
+  role: !host us-based-app
+  privileges: [ read, execute ]
+
+# Secret we expect only to replicate to Followers in the EU region
+- !host eu-based-app
+- !variable eu-only
+- !permit
+  resource: !variable eu-only
+  role: !host eu-based-app
+  privileges: [ read, execute ]
+
+- !policy
+  id: Vault/LOB_user/Safe01/delegation
+  body:
+    - !group consumers
+    - &variables
+      - !variable eu-only-1
+      - !variable eu-only-2
+    - !permit
+      role: !group consumers
+      privilege: [ read, execute ]
+      resource: *variables
