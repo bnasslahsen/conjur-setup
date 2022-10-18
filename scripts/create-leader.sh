@@ -30,7 +30,7 @@ podman run \
     --name $containerName \
     --detach \
     --restart=unless-stopped \
-    --security-opt seccomp=/opt/cyberark/dap/security/seccomp.json \
+    --security-opt seccomp=unconfined \
     --publish "443:443" \
     --publish "444:444" \
     --publish "5432:5432" \
