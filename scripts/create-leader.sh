@@ -44,8 +44,6 @@ podman run \
     --volume /opt/cyberark/dap/logs:/var/log/conjur:Z \
     $conjurImage
 
-podman logs --since=2m $containerName
-
 sleep 10
 
 set +x
